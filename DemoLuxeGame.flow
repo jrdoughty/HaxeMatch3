@@ -1,0 +1,25 @@
+{
+
+  project : {
+    name : 'Basic Match 3',
+    version : '0.1',
+    author : 'John Doughty',
+
+    app : {
+      name : 'Basic_Match_3',
+      package : ''
+    },
+
+    build : {
+      dependencies : {
+        luxe : '*'
+      }
+    },
+    
+    files : {
+      images : 'img/'
+    }
+
+  }
+
+}

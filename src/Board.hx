@@ -1,6 +1,8 @@
 using Std;
 import luxe.Sprite;
-import phoenix.Vector;
+import luxe.Input;
+import luxe.Vector;
+import luxe.Color;
 
 class Board 
 {
@@ -17,13 +19,18 @@ class Board
             y = Math.floor(i / Main.BOARDWIDTH);
             numImage = Math.floor(Math.random() * Main.NUMGEMIMAGES);
             gems.push(new Gem(numImage, x, y, "down"));
-
-            /*gems.push(new Sprite({
-            pos: Luxe.screen.mid,//new Vector(x * 128, y * 128),
-            texture : Luxe.resources.texture('img/gem'+numImage+'.png'),
-            depth : 0
-        }));*/
         }
+    }
+
+    public function onMouseUp(pos:Vector)
+    {
+        var x: Float = (pos.x) - pos.x % Main.GEMIMAGESIZE;
+        var y: Float = (pos.y) - pos.y % Main.GEMIMAGESIZE;
+        x = x / Main.GEMIMAGESIZE;
+        y = y / Main.GEMIMAGESIZE;
+        var indexFloat:Float = x + y * Main.BOARDWIDTH;
+        var index:Int = Math.floor(indexFloat);
+        gems[index].color = new Color().rgb(0xf94b04);
     }
 
 }

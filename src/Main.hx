@@ -66,6 +66,11 @@ class Main extends luxe.Game
        }
 
     } //onkeyup
+    override function onmouseup( event:MouseEvent ) 
+    {
+        if(event.button == MouseButton.left)
+            activeBoard.onMouseUp(event.pos);
+    }
 
     override function update(dt:Float) {
 
@@ -74,14 +79,9 @@ class Main extends luxe.Game
 
     } //update
 
-            //The config function is simple: It hands us a default config,
-        //we modify the values that we want to change, and then we
-        //return it with the modifications.
+
     override function config( config:luxe.AppConfig ) {
         var i: Int;
-            //This time, we are going to modify the preload parcel texture list,
-            //and add our texture for the sprite, so that it will exist when we
-            //try to use it during `ready`
         for(i in 0...NUMGEMIMAGES)
             config.preload.textures.push({ id:'img/gem'+i+'.png' });
 

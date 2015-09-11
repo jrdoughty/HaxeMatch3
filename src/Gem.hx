@@ -17,7 +17,6 @@ class Gem extends Sprite
             pos: new Vector(xCord * Main.GEMIMAGESIZE + Main.GEMIMAGESIZE / 2, yCord * Main.GEMIMAGESIZE + Main.GEMIMAGESIZE / 2),
             texture : Luxe.resources.texture('img/gem' + numImage + '.png'),
             depth : 4,
-            //color: new Color().rgb(0xf94b04),
             size: new Vector(Main.GEMIMAGESIZE, Main.GEMIMAGESIZE)
         });
         this.numImage = numImage;
@@ -25,6 +24,24 @@ class Gem extends Sprite
         this.y = yCord;
         this.direction = direction;
         
+    }
+
+    public function validateMove(neighbor:Gem):Bool
+    {
+        var result = false;
+        if(neighborNodes.indexOf(neighbor) != -1 )
+        {
+            for (i in 0...neighbor.neighborNodes.length) 
+            {
+                if(numImage == neighbor.neighborNodes[i].numImage && neighbor.neighborNodes[i] != this)
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        //trace(neighbors.length);
+        return result;
     }
 
     public function swap(x:Int, y:Int)

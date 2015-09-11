@@ -46,8 +46,12 @@ class Board
         if(selectedGems.length == 2)
         {
             var oldPosofFirst = new Vector(selectedGems[0].x,selectedGems[0].y);
-            selectedGems[0].swap(selectedGems[1].x,selectedGems[1].y);
-            selectedGems[1].swap(cast(oldPosofFirst.x, Int),cast(oldPosofFirst.y, Int));
+            if(selectedGems[0].validateMove(selectedGems[1]) ||
+                selectedGems[1].validateMove(selectedGems[0]))
+            {
+                selectedGems[0].swap(selectedGems[1].x,selectedGems[1].y);
+                selectedGems[1].swap(cast(oldPosofFirst.x, Int),cast(oldPosofFirst.y, Int));
+            }
             buildNeighbors(selectedGems[0]);
             buildNeighbors(selectedGems[1]);
             selectedGems[0].color = new Color().rgb(0xffffff);
@@ -58,21 +62,15 @@ class Board
 
     public function buildNeighbors(gem:Gem)
     {
+        gem.neighborNodes = new Array();
         for (i in 0...gems.length) 
         {
-            gem.neighborNodes = new Array();
-            if(gem.x >= gems[i].x - 1 && gem.x <= gems[i].x + 1 &&
-               gem.y >= gems[i].y - 1 && gem.y <= gems[i].y + 1 &&
-               (gem.x == gems[i].x && gem.y == gems[i].y) == false)
+            if((gem.x >= gems[i].x - 1 && gem.x <= gems[i].x + 1 && gem.y == gems[i].y ||
+               gem.y >= gems[i].y - 1 && gem.y <= gems[i].y + 1 && gem.x == gems[i].x) && gem != gems[i])
             {
                 gem.neighborNodes.push(gems[i]);
             }
         }
-    }
-
-    public function isValidMove()
-    {
-        selectedGems[0];
     }
 
 }

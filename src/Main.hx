@@ -18,22 +18,6 @@ class Main extends luxe.Game
     public static inline var MOVERATE: Int = 25; // 1 to 100, larger num means faster animations
     public static inline var DEDUCTSPEED: Float = 0.8; //// reduces score by 1 point every DEDUCTSPEED seconds.
 
-    public static var PURPLE: Color = new Color(255, 0, 255, 1);
-    public static var LIGHTBLUE: Color = new Color(170, 190, 255, 1);
-    public static var BLUE: Color = new Color(0, 0, 255, 1);
-    public static var RED: Color = new Color(255, 100, 100, 1);
-    public static var BLACK: Color = new Color(0, 0, 0, 1);
-    public static var BROWN: Color = new Color(85, 65, 0, 1);
-    //public static inline var HIGHLIGHTCOLOR: Color = PURPLE; // color of the selected gem's border
-    //public static inline var BGCOLOR: Color = LIGHTBLUE; // background color on the screen
-    //public static inline var GRIDCOLOR: Color = BLUE; // color of the game board
-    //public static inline var GAMEOVERCOLOR: Color = RED; // color of the "Game over" text.
-    //public static inline var GAMEOVERBGCOLOR: Color = BLACK; // background color of the "Game over" text.
-    //public static inline var SCORECOLOR: Color = BROWN; // color of the text for the player's score
-
-    //public static inline var XMARGIN: Int = int((WINDOWWIDTH - GEMIMAGESIZE * BOARDWIDTH) / 2);
-    //public static inline var YMARGIN: Int = int((WINDOWHEIGHT - GEMIMAGESIZE * BOARDHEIGHT) / 2);
-
     public static inline var UP: String = 'up';
     public static inline var DOWN: String = 'down';
     public static inline var LEFT: String = 'left';

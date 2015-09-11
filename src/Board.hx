@@ -7,6 +7,7 @@ class Board
 {
     public var gems: Array<Gem> = new Array();
     public var selectedGems: Array<Gem> = new Array();
+    
     public function new()
     {
         var i: Int;

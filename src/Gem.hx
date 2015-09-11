@@ -10,6 +10,8 @@ class Gem extends Sprite
     public var neighborNodes:Array<Gem>;
     public var x: Int;
     public var y: Int;
+    public static inline var VERTICAL:Bool = true;
+    public static inline var HORIZONTAL:Bool = false;
 
     public function new (numImage: Int, xCord: Int, yCord: Int, direction: String)
     {
@@ -28,20 +30,32 @@ class Gem extends Sprite
 
     public function validateMove(neighbor:Gem):Bool
     {
-        var result = false;
+        var verticle = false;
+        var horizontal = false;
         if(neighborNodes.indexOf(neighbor) != -1 )
         {
             for (i in 0...neighbor.neighborNodes.length) 
             {
                 if(numImage == neighbor.neighborNodes[i].numImage && neighbor.neighborNodes[i] != this)
                 {
-                    result = true;
-                    break;
+                    if(neighbor.x == x && verticle == false)
+                    {
+                        verticle = true;
+                    }
+                    else if(horizontal == false)
+                    {
+                        horizontal = true;
+                    }
                 }
             }
         }
         //trace(neighbors.length);
-        return result;
+        return (verticle || horizontal);
+    }
+
+    public function checkDirection(verticle:Bool)
+    {
+
     }
 
     public function swap(x:Int, y:Int)

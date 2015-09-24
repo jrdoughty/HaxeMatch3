@@ -23,20 +23,16 @@ class Main extends luxe.Game
     public static inline var LEFT: String = 'left';
     public static inline var RIGHT: String = 'right';
 
+    public static inline var MININAROW: Int = 3;
+
     override function ready()
     {
         newGame();
-        /*
-        var player = new Sprite({
-            texture : Luxe.resources.texture('img/gem0.png'),
-            pos : Luxe.screen.mid,
-            depth : 4
-        });*/
     }
 
     public function newGame():Void
     {
-        activeBoard = new Board();
+        activeBoard = Board.instance();
         score = 0;
     }
 

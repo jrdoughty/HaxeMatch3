@@ -2,6 +2,7 @@ using Std;
 import luxe.Input;
 import luxe.Vector;
 import luxe.Color;
+import luxe.tween.Actuate;
 
 class Board 
 {
@@ -68,14 +69,66 @@ class Board
             firstGem.swap(secondGem);
             //animate
             toExplode = toExplode.concat(getPostSwapMatches());
-            for (i in 0...toExplode.length) {
-                toExplode[i].color = new Color().rgb(0x0066ff);
-            }
-
-            for (i in 0...gems.length) 
+            for (i in 0...toExplode.length) 
             {
-                buildNeighbors(gems[i]);
+                Actuate.tween(toExplode[i].color, 0.5, {a:0}).onComplete(function(){
+                    gems.splice(gems.indexOf(toExplode[i]), 1)[0] = null;
+                });
             }
+            Luxe.timer.schedule(.6, collapseGems);
+        }
+    }
+
+    public function collapseGems():Void
+    {
+        var i:Int = 0;
+        var iIndex:Int;
+        var j:Int = 0;
+        var jIndex:Int;
+        var shiftCount:Int = 0;
+        var gem:Gem;
+        var newGemCounts:Array<Int> = [];
+        for (i in 0...Main.BOARDWIDTH)
+        {
+            iIndex = Main.BOARDWIDTH - i - 1;
+            shiftCount = 0;
+
+            for (j in 0...Main.BOARDHEIGHT)
+            {
+                jIndex = Main.BOARDHEIGHT - j - 1;
+                gem = getGemAtRowCol(iIndex, jIndex);
+                if(gem == null)
+                {
+                    ++shiftCount;
+                    trace(shiftCount);
+                }
+                else
+                {
+                    Actuate.tween(gem.pos, 0.5, {y:gem.pos.y+(Main.GEMIMAGESIZE*shiftCount)});
+                }
+            }
+            newGemCounts.push(shiftCount);
+        }
+        
+        Luxe.timer.schedule(.6, function(){animateNewGems(newGemCounts);});
+    }
+
+    public function animateNewGems(newGemCounts:Array<Int>)
+    {
+        var iIndex:Int;
+        var i:Int;
+        var j:Int;
+        for(i in 0...newGemCounts.length)
+        {
+            iIndex = Main.BOARDWIDTH - i - 1;
+            for(j in 0...newGemCounts[i])
+            {
+                gems.push(new Gem(1, iIndex, j, "down"));
+            }
+        }
+        for (i in 0...gems.length) 
+        {
+            buildNeighbors(gems[i]);
         }
     }
 

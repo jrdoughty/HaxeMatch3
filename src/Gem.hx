@@ -80,6 +80,19 @@ class Gem extends Sprite
         return result;
     }
 
+    public function getAllInDirection(direction:String):Array<Gem>
+    {
+        var result:Array<Gem> = [];
+        var temp;
+        if(neighborNodes.exists(direction))
+        {
+            result.push(neighborNodes[direction]);
+            result = result.concat(getAllInDirection(direction));
+        }
+
+        return result;
+    }
+
     public function swap(gem:Gem)
     {
         var oldPos = pos;

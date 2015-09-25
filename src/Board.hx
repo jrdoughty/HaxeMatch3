@@ -6,11 +6,11 @@ import luxe.tween.Actuate;
 
 class Board 
 {
-    public var gems: Array<Gem> = [];
-    public var selectedGems: Array<Gem> = [];
+    private var gems: Array<Gem> = [];
+    private var selectedGems: Array<Gem> = [];
     private static var board:Board = null;
 
-    public function new()
+    private function new()
     {
         var i: Int;
         var x: Int;
@@ -38,6 +38,29 @@ class Board
 
         return board;
     }
+
+    public function onMouseUp(pos:Vector):Void
+    {
+        var i: Int = 0;
+        var x: Float = (pos.x - pos.x % Main.GEMIMAGESIZE)/Main.GEMIMAGESIZE;
+        var y: Float = (pos.y - pos.y % Main.GEMIMAGESIZE)/Main.GEMIMAGESIZE;
+        var gem = getGemAtRowCol(Std.int(x),Std.int(y));
+
+        if(gem == null)
+        {
+            return;
+        }
+        gem.color = new Color().rgb(0xdddddd);
+        selectedGems.push(gem);
+
+        if(selectedGems.length == 2)
+        {
+            selectedGems[0].color = new Color().rgb(0xffffff);
+            selectedGems[1].color = new Color().rgb(0xffffff);
+            checkForMatch(selectedGems[0], selectedGems[1]);
+            selectedGems = [];
+        }
+    }
         
     private function getGemAtRowCol(x:Int, y:Int):Gem
     {
@@ -52,7 +75,7 @@ class Board
         return result;
     }
 
-    public function grabMatchingGems(firstGem:Gem, secondGem:Gem):Array<Gem>
+    private function grabMatchingGems(firstGem:Gem, secondGem:Gem):Array<Gem>
     {
         var result: Array<Gem> = [];
         result = result.concat(firstGem.validateMove(secondGem));
@@ -60,26 +83,50 @@ class Board
         return result;
     }
 
-    public function checkForMatch(firstGem:Gem, secondGem:Gem):Void
+    private function checkForMatch(?firstGem:Gem, ?secondGem:Gem):Void
     {
-        var oldPosofFirst = new Vector(firstGem.x,firstGem.y);
-        var toExplode: Array<Gem> = grabMatchingGems(firstGem, secondGem);
+        var toExplode: Array<Gem> = [];
+        if(firstGem != null && secondGem != null)
+        {
+            toExplode = grabMatchingGems(firstGem, secondGem);
+            if(toExplode.length != 0)
+            {
+                firstGem.swap(secondGem);
+            }
+        }
+        toExplode = toExplode.concat(getPostSwapMatches());
+        for (i in 0...toExplode.length) 
+        {
+            Actuate.tween(toExplode[i].color, 0.5, {a:0}).onComplete(function(){
+                gems.splice(gems.indexOf(toExplode[i]), 1)[0] = null;
+            });
+        }
         if(toExplode.length != 0)
         {
-            firstGem.swap(secondGem);
-            //animate
-            toExplode = toExplode.concat(getPostSwapMatches());
-            for (i in 0...toExplode.length) 
-            {
-                Actuate.tween(toExplode[i].color, 0.5, {a:0}).onComplete(function(){
-                    gems.splice(gems.indexOf(toExplode[i]), 1)[0] = null;
-                });
-            }
             Luxe.timer.schedule(.6, collapseGems);
         }
     }
 
-    public function collapseGems():Void
+    private function handleMatches(?toExplode:Array<Gem>):Void
+    {
+        if(toExplode == null)
+        {
+            toExplode = getPostSwapMatches();
+        }
+        else
+        {
+            toExplode = toExplode.concat(getPostSwapMatches());
+        }
+        for (i in 0...toExplode.length) 
+        {
+            Actuate.tween(toExplode[i].color, 0.5, {a:0}).onComplete(function(){
+                gems.splice(gems.indexOf(toExplode[i]), 1)[0] = null;
+            });
+        }
+        Luxe.timer.schedule(.6, collapseGems);
+    }
+
+    private function collapseGems():Void
     {
         var i:Int = 0;
         var iIndex:Int;
@@ -113,7 +160,7 @@ class Board
         Luxe.timer.schedule(.6, function(){animateNewGems(newGemCounts);});
     }
 
-    public function animateNewGems(newGemCounts:Array<Int>)
+    private function animateNewGems(newGemCounts:Array<Int>):Void
     {
         var iIndex:Int;
         var i:Int;
@@ -123,16 +170,21 @@ class Board
             iIndex = Main.BOARDWIDTH - i - 1;
             for(j in 0...newGemCounts[i])
             {
-                gems.push(new Gem(1, iIndex, j, "down"));
+                gems.push(new Gem(Math.floor(Math.random() * Main.NUMGEMIMAGES), iIndex, j, "down"));
             }
+        }
+        for (i in 0...gems.length) 
+        {
+            gems[i].reset();
         }
         for (i in 0...gems.length) 
         {
             buildNeighbors(gems[i]);
         }
+        checkForMatch();
     }
 
-    public function getPostSwapMatches(): Array<Gem>
+    private function getPostSwapMatches(): Array<Gem>
     {
         var testArray:Array<Gem> = [];
         for (i in 0...gems.length) 
@@ -142,30 +194,7 @@ class Board
         return testArray;
     }
 
-    public function onMouseUp(pos:Vector):Void
-    {
-        var i: Int = 0;
-        var x: Float = (pos.x - pos.x % Main.GEMIMAGESIZE)/Main.GEMIMAGESIZE;
-        var y: Float = (pos.y - pos.y % Main.GEMIMAGESIZE)/Main.GEMIMAGESIZE;
-        var gem = getGemAtRowCol(Std.int(x),Std.int(y));
-
-        if(gem == null)
-        {
-            return;
-        }
-        gem.color = new Color().rgb(0xdddddd);
-        selectedGems.push(gem);
-
-        if(selectedGems.length == 2)
-        {
-            selectedGems[0].color = new Color().rgb(0xffffff);
-            selectedGems[1].color = new Color().rgb(0xffffff);
-            checkForMatch(selectedGems[0], selectedGems[1]);
-            selectedGems = [];
-        }
-    }
-
-    public function buildNeighbors(gem:Gem)
+    private function buildNeighbors(gem:Gem):Void
     {
         gem.neighborNodes = new Map();
         for (i in 0...gems.length) 

@@ -37,7 +37,8 @@ class Main extends luxe.Game
     }
 
 
-    override function onkeyup( e:KeyEvent ) {
+    override function onkeyup( e:KeyEvent ):Void 
+    {
 
        //called by luxe for you, when a key is released
 
@@ -46,7 +47,7 @@ class Main extends luxe.Game
        }
 
     } //onkeyup
-    override function onmouseup( event:MouseEvent ) 
+    override function onmouseup( event:MouseEvent ):Void
     {
         if(event.button == MouseButton.left)
             activeBoard.onMouseUp(event.pos);
@@ -60,7 +61,8 @@ class Main extends luxe.Game
     } //update
 
 
-    override function config( config:luxe.AppConfig ) {
+    override function config( config:luxe.AppConfig ):luxe.AppConfig 
+    {
         var i: Int;
         for(i in 0...NUMGEMIMAGES)
             config.preload.textures.push({ id:'img/gem'+i+'.png' });

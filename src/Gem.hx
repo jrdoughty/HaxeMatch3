@@ -5,14 +5,14 @@ import Map;
 
 class Gem extends Sprite 
 {
-    public var numImage: Int = 0;
-    public var direction: String = "";
-    public var sprite: Sprite;
+    private var numImage: Int = 0;
+    private var direction: String = "";
+    private var sprite: Sprite;
     public var neighborNodes:Map<String,Gem>;
     public var x: Int;
     public var y: Int;
-    public static inline var VERTICAL:Bool = true;
-    public static inline var HORIZONTAL:Bool = false;
+    private static inline var VERTICAL:Bool = true;
+    private static inline var HORIZONTAL:Bool = false;
 
     public function new (numImage: Int, xCord: Int, yCord: Int, direction: String)
     {
@@ -28,6 +28,12 @@ class Gem extends Sprite
         this.y = yCord;
         this.direction = direction;
         
+    }
+
+    public function reset():Void
+    {
+        x = Std.int((pos.x - Main.GEMIMAGESIZE/2)/Main.GEMIMAGESIZE);
+        y = Std.int((pos.y - Main.GEMIMAGESIZE/2)/Main.GEMIMAGESIZE);
     }
 
     public function validateMove(gem:Gem):Array<Gem>
@@ -64,7 +70,7 @@ class Gem extends Sprite
         return (result);
     }
 
-    public function checkDirection(gem:Gem, key:String):Array<Gem>
+    private function checkDirection(gem:Gem, key:String):Array<Gem>
     {
         var result:Array<Gem> = [];
         var temp;
@@ -80,7 +86,7 @@ class Gem extends Sprite
         return result;
     }
 
-    public function getAllInDirection(direction:String):Array<Gem>
+    private function getAllInDirection(direction:String):Array<Gem>
     {
         var result:Array<Gem> = [];
         var temp;
@@ -93,7 +99,7 @@ class Gem extends Sprite
         return result;
     }
 
-    public function swap(gem:Gem)
+    public function swap(gem:Gem):Void
     {
         var oldPos = pos;
         var oldX = x;

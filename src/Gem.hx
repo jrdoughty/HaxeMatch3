@@ -46,27 +46,30 @@ class Gem extends Sprite
         var i: Int = 0;
         gemsInARowMap = new Map();
 
-        for(i in directions)
+        if(gem.y == y && gem.x >= x - 1 && gem.x <= x + 1 ||
+            gem.x == x && gem.y >= y - 1 && gem.y <= y + 1 )
         {
-            gemsInARowMap.set(i, checkDirection(gem, i));
-        }
+            for(i in directions)
+            {
+                gemsInARowMap.set(i, checkDirection(gem, i));
+            }
 
-        horizontal = gemsInARowMap[Main.RIGHT].concat(gemsInARowMap[Main.LEFT]);
-        vertical = gemsInARowMap[Main.UP].concat(gemsInARowMap[Main.DOWN]);
-        
-        if(horizontal.length >= Main.MININAROW - 1)
-        {
-            result = result.concat(horizontal);
+            horizontal = gemsInARowMap[Main.RIGHT].concat(gemsInARowMap[Main.LEFT]);
+            vertical = gemsInARowMap[Main.UP].concat(gemsInARowMap[Main.DOWN]);
+            
+            if(horizontal.length >= Main.MININAROW - 1)
+            {
+                result = result.concat(horizontal);
+            }
+            if(vertical.length >= Main.MININAROW - 1)
+            {
+                result = result.concat(vertical);
+            }
+            if(result.length != 0)
+            {
+                result.push(this);
+            }
         }
-        if(vertical.length >= Main.MININAROW - 1)
-        {
-            result = result.concat(vertical);
-        }
-        if(result.length != 0)
-        {
-            result.push(this);
-        }
-        
         return (result);
     }
 

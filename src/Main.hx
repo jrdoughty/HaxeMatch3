@@ -39,26 +39,17 @@ class Main extends luxe.Game
 
     override function onkeyup( e:KeyEvent ):Void 
     {
-
-       //called by luxe for you, when a key is released
-
        if(e.keycode == Key.escape) {
           Luxe.shutdown();
        }
 
-    } //onkeyup
+    }
+    
     override function onmouseup( event:MouseEvent ):Void
     {
         if(event.button == MouseButton.left)
             activeBoard.onMouseUp(event.pos);
     }
-
-    override function update(dt:Float) {
-
-       //called by luxe for you, each frame, and passes in the
-       //delta time (the length in seconds of the last frame).
-
-    } //update
 
 
     override function config( config:luxe.AppConfig ):luxe.AppConfig 
@@ -69,5 +60,5 @@ class Main extends luxe.Game
 
         return config;
 
-    } //config
-}//Main
+    }
+}

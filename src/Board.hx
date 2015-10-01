@@ -3,12 +3,17 @@ import luxe.Input;
 import luxe.Vector;
 import luxe.Color;
 import luxe.tween.Actuate;
+import luxe.Text;
+import phoenix.BitmapFont;
 
 class Board 
 {
     private var gems: Array<Gem> = [];
     private var selectedGems: Array<Gem> = [];
     private static var board:Board = null;
+    private var score: Text;
+    private var font:BitmapFont = Luxe.resources.font('font/PressStart2P.ttf');
+    //private var theFont:BitmapFont;
 
     private function new()
     {
@@ -16,11 +21,20 @@ class Board
         var x: Int;
         var y: Int;
         var numImage: Int;
+        score = new Text({
+            pos : Luxe.screen.mid,
+            point_size : Math.min( Math.round(Luxe.screen.h/12), 48),
+            depth : 3,
+            align : TextAlign.center,
+            text : 'no message yet',
+            font : font,
+            color : new Color(0,0,0,0).rgb(0x242424)
+        });
         for (i in 0...Main.BOARDWIDTH * Main.BOARDHEIGHT)
         {
             x = i % Main.BOARDWIDTH;
             y = Math.floor(i / Main.BOARDWIDTH);
-            numImage = Math.floor(Math.random() * Main.NUMGEMIMAGES);
+            numImage = getRandomGemID();
             gems.push(new Gem(numImage, x, y, "down"));
         }
         for (i in 0...gems.length) 
@@ -37,6 +51,42 @@ class Board
         }
 
         return board;
+    }
+    
+    @:extern static inline function getRandomGemID():Int
+    {
+        return Math.floor(Math.random() * Main.NUMGEMIMAGES);
+    }
+        
+    @:extern private inline function getGemAtRowCol(x:Int, y:Int):Gem
+    {
+        var result:Gem = null;
+        for (i in 0...gems.length) {
+            if(gems[i].x == x && gems[i].y == y)
+            {
+                result = gems[i];
+                break;
+            }
+        }
+        return result;
+    }
+
+    @:extern private inline function grabMatchingGems(firstGem:Gem, secondGem:Gem):Array<Gem>
+    {
+        var result: Array<Gem> = [];
+        result = result.concat(firstGem.validateMove(secondGem));
+        result = result.concat(secondGem.validateMove(firstGem));
+        return result;
+    }
+
+    @:extern private inline function getPostSwapMatches(): Array<Gem>
+    {
+        var testArray:Array<Gem> = [];
+        for (i in 0...gems.length) 
+        {
+            testArray = testArray.concat(gems[i].validateMove(gems[i]));
+        }
+        return testArray;
     }
 
     public function onMouseUp(pos:Vector):Void
@@ -60,27 +110,6 @@ class Board
             checkForMatch(selectedGems[0], selectedGems[1]);
             selectedGems = [];
         }
-    }
-        
-    private function getGemAtRowCol(x:Int, y:Int):Gem
-    {
-        var result:Gem = null;
-        for (i in 0...gems.length) {
-            if(gems[i].x == x && gems[i].y == y)
-            {
-                result = gems[i];
-                break;
-            }
-        }
-        return result;
-    }
-
-    private function grabMatchingGems(firstGem:Gem, secondGem:Gem):Array<Gem>
-    {
-        var result: Array<Gem> = [];
-        result = result.concat(firstGem.validateMove(secondGem));
-        result = result.concat(secondGem.validateMove(firstGem));
-        return result;
     }
 
     private function checkForMatch(?firstGem:Gem, ?secondGem:Gem):Void
@@ -147,7 +176,6 @@ class Board
                 if(gem == null)
                 {
                     ++shiftCount;
-                    trace(shiftCount);
                 }
                 else
                 {
@@ -159,7 +187,6 @@ class Board
         
         Luxe.timer.schedule(.6, function(){animateNewGems(newGemCounts);});
     }
-
     private function animateNewGems(newGemCounts:Array<Int>):Void
     {
         var iIndex:Int;
@@ -170,7 +197,7 @@ class Board
             iIndex = Main.BOARDWIDTH - i - 1;
             for(j in 0...newGemCounts[i])
             {
-                gems.push(new Gem(Math.floor(Math.random() * Main.NUMGEMIMAGES), iIndex, j, "down"));
+                gems.push(new Gem(getRandomGemID(), iIndex, j, "down"));
             }
         }
         for (i in 0...gems.length) 
@@ -182,16 +209,6 @@ class Board
             buildNeighbors(gems[i]);
         }
         checkForMatch();
-    }
-
-    private function getPostSwapMatches(): Array<Gem>
-    {
-        var testArray:Array<Gem> = [];
-        for (i in 0...gems.length) 
-        {
-            testArray = testArray.concat(gems[i].validateMove(gems[i]));
-        }
-        return testArray;
     }
 
     private function buildNeighbors(gem:Gem):Void

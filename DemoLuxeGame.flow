@@ -1,5 +1,15 @@
 {
 
+  luxe:{
+      window: {
+        width:512,
+        height:512,
+        title:'Haxe Match 3',
+        fullscreen:false,
+        resizable:true,
+        borderless:false
+      }
+    },
   project : {
     name : 'Basic Match 3',
     version : '0.1',
